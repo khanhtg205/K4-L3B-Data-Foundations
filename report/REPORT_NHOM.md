@@ -92,12 +92,19 @@ Kết quả thực nghiệm phân tích đường cơ sở bằng `ChunkingStrat
 ### 2.2. Chiến lược của từng thành viên
 
 #### R1 — Đinh Văn Bình: FixedSizeChunker (with Overlap)
-- **Cấu hình:** `FixedSizeChunker(chunk_size=800, overlap=80)`
-- **Đặc tính kỹ thuật & Lý do chọn:** Cắt văn bản thành các khối cố định 800 ký tự với độ chồng lặp 80 ký tự (10%). Overlap đóng vai trò như một bộ đệm an toàn giúp phần kết thúc của đoạn trước không bị mất liên kết ngữ nghĩa với phần mở đầu của đoạn sau. Chiến lược này có tốc độ xử lý nhanh nhất, kích thước vector đồng đều.
+- **Cấu hình cá nhân đã chạy:** `FixedSizeChunker(chunk_size=500, overlap=50)`; tạo **186 chunks từ 5 tài liệu** trong `data/ecommerce-crawled-final/`.
+- **Đặc tính kỹ thuật & Lý do chọn:** Cắt văn bản thành các khối tối đa 500 ký tự với overlap 50 ký tự (10%) làm baseline đơn giản, dễ tái lập. Overlap giữ một phần ngữ cảnh ở ranh giới nhưng không bảo đảm giữ trọn câu hoặc danh sách điều kiện. Số chiều vector do mô hình embedding quyết định, không phải do kích thước chunk.
+- **Embedding:** LocalEmbedder với `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`; vector được chuẩn hóa trước khi tính score.
+- **Agent:** `gemini-2.5-flash`, temperature 0; đã chạy đủ 5 câu và lưu câu trả lời thực tế.
+- **Truy xuất:** `top_k=3`; filter `audience=buyer` cho Q1–Q3 và `audience=seller` cho Q4–Q5.
+- **Kết quả cá nhân:** **3/10 theo marker**, **6/10 theo đánh giá nội dung và Agent**. Q1 và Q2 có đáp án đúng nhưng không khớp marker; Q3 trả lời sai mốc thời gian; Q4 trả lời đúng với chunk đáp án ở top-2; Q5 có marker ở top-1 nhưng thiếu các điều kiện do chunk bị cắt.
+- **Bằng chứng:** [Báo cáo cá nhân](REPORT_CANHAN.md), [log benchmark](../ket_qua_benchmark.txt), [JSON chứa top-3 và câu trả lời Agent](../ket_qua_benchmark.json).
+- **A/B cá nhân:** Với Q1, filter buyer loại chunk seller đứng đầu và đưa chunk trả lời lên top-1, nhưng điểm marker vẫn 0/2 ở cả hai lượt. Q4 cá nhân hỏi tỷ lệ lỗi giao dịch tối đa 2%; top-3 không đổi khi bỏ filter, marker ở top-2 và được 1/2 ở cả hai lượt.
+- **Phạm vi so sánh:** Lượt cá nhân này khác cấu hình tổng hợp Gemini embedding/800 ký tự ở các mục chung. Q4 cá nhân hỏi tỷ lệ lỗi giao dịch 2%, trong khi Q4 nhóm hỏi khấu trừ tiền hoàn 50%; Q1 cá nhân không lọc `category`, và Q2 dùng marker `seller should get back`. Không gán điểm 9/10 của lượt tổng hợp cho lượt cá nhân này; cần thống nhất cấu hình, câu hỏi và cách chấm trước khi so sánh trực tiếp.
 - **Code đại diện:**
   ```python
-  # Cấu hình trong pipeline load_documents
-  chunker = FixedSizeChunker(chunk_size=800, overlap=80)
+  # Cấu hình cá nhân trong bench.py; chunking được thực hiện ngoài store.
+  CHUNKER = FixedSizeChunker(chunk_size=500, overlap=50)
   ```
 
 #### R2 — Tô Huy Thông: RecursiveChunker
@@ -174,7 +181,7 @@ Kết quả thực nghiệm phân tích đường cơ sở bằng `ChunkingStrat
 
 | Thành viên | Chiến lược | Số Chunk / Toàn bộ Corpus | Điểm mạnh cốt lõi | Điểm yếu / Giới hạn |
 |---|---|---:|---|---|
-| **R1 — Bình** | `FixedSizeChunker(800, 80)` | 118 chunks | Kích thước dự đoán được; overlap bù đắp mất mát thông tin tại biên cắt. | Cắt ngang câu hoặc tiêu đề; phân mảnh cơ học không theo ngữ nghĩa. |
+| **R1 — Bình** | `FixedSizeChunker(500, 50)`, lượt cá nhân dùng embedding local | 186 chunks | Dễ tái lập; có kết quả Agent và A/B; 3/10 marker, 6/10 nội dung + Agent. | Có thể cắt giữa điều kiện; khác cấu hình/bộ câu hỏi của lượt tổng hợp nên chưa so sánh điểm trực tiếp. |
 | **R2 — Thông** | `RecursiveChunker(800)` | 117 chunks | Giữ trọn vẹn ranh giới câu, đoạn văn và danh sách liệt kê. | Không nhận diện cấu trúc heading; các mảnh con bị mất ngữ cảnh mục cha. |
 | **R3 — Khánh** | `HeadingChunker(800)` | 146 chunks (tổng hợp)<br>*(243 chunks ở chunk_size=500)* | Giữ toàn vẹn ngữ cảnh tiêu đề cho từng chunk; đạt điểm truy xuất cao nhất. | Phụ thuộc vào chất lượng đánh dấu heading Markdown của văn bản nguồn. |
 | **R4 — Nhật** | `SemanticChunker(800, 0.5)` | 401 chunks (Mock)<br>*(Lead benchmark toàn nhóm)* | Ranh giới cắt hoàn toàn dựa trên sự dịch chuyển ngữ nghĩa thực tế. | Phụ thuộc tuyệt đối vào chất lượng model nhúng; tính toán nặng và đắt đỏ. |
@@ -214,12 +221,12 @@ Nhóm thống nhất bộ 5 câu hỏi bao quát đầy đủ các dạng truy v
 
 | # | Tóm tắt câu hỏi | Chuỗi Marker kiểm tra | R1 — Fixed+Overlap | R2 — Recursive | R3 — Heading | Phân tích chi tiết |
 |:---:|---|---|:---:|:---:|:---:|---|
-| **Q1** | Hàng lỗi/hỏng $\rightarrow$ quyền lợi | `return it even if` | **2** / 2 (Rank 1) | **1** / 2 (Rank 2) | **2** / 2 (Rank 1) | Filter loại bỏ triệt để các section chung chung, đưa chunk chứa điều khoản cụ thể lên Top-1. |
+| **Q1** | Hàng lỗi/hỏng $\rightarrow$ quyền lợi | `return it even if` | **2** / 2 (Rank 1) | **2** / 2 (Rank 1) | **2** / 2 (Rank 1) | Filter loại bỏ triệt để các section chung chung, đưa chunk chứa điều khoản cụ thể lên Top-1. |
 | **Q2** | Thời hạn seller phản hồi | `3 business days` | **2** / 2 (Rank 1) | **2** / 2 (Rank 1) | **2** / 2 (Rank 1) | Cả 3 chiến lược đều đưa marker lên Rank 1 với độ tương đồng rất cao. |
 | **Q3** | Thời gian tiền về tài khoản | `typically available` | **2** / 2 (Rank 1) | **0** / 2 (Vắng mặt) | **2** / 2 (Rank 1) | **Failure Case của R2:** Recursive cắt đứt section khiến chunk chứa số liệu bị đẩy ra ngoài Top-3. |
-| **Q4** | Khấu trừ hàng hoàn / Defect rate | `deduct up to 50%` / `2%` | **2** / 2 (Rank 1) | **2** / 2 (Rank 1) | **2** / 2 (Rank 1) | Cả 3 chiến lược định vị chính xác điều khoản trong tài liệu người bán. |
+| **Q4** | Khấu trừ hàng hoàn / Defect rate | `deduct up to 50%` / `2%` | **2** / 2 (Rank 1) | **0** / 2 (Vắng mặt) | **2** / 2 (Rank 1) | R1, R3 định vị chính xác. R2 thất bại do không chứa thông tin cụ thể. |
 | **Q5** | Điều kiện bảo vệ Top Rated | `Top Rated Seller at the time` | **1** / 2 (Rank 3) | **2** / 2 (Rank 1) | **2** / 2 (Rank 1) | FixedSize bị trôi xuống Rank 3 do cắt ngang danh sách; Heading đạt Rank 1 trọn vẹn. |
-| **TỔNG** | **Tổng điểm chất lượng truy xuất** | | **9 / 10** | **7 / 10** | **10 / 10** | **`HeadingChunker` xuất sắc nhất toàn diện.** |
+| **TỔNG** | **Tổng điểm chất lượng truy xuất** | | **9 / 10** | **6 / 10** | **10 / 10** | **`HeadingChunker` xuất sắc nhất toàn diện.** |
 
 ---
 
@@ -230,11 +237,11 @@ Nhóm giữ nguyên 100% nội dung câu hỏi truy vấn (Query Text) và thự
 | Query | Chiến lược | Điểm WITH Filter | Điểm WITHOUT Filter | Top-3 có thay đổi? | Kết luận thực nghiệm |
 |:---:|---|:---:|:---:|:---:|---|
 | **Q1** | FixedSize + Overlap | **2/2** (Rank 1) | **0/2** (Vắng mặt) | **CÓ** | Metadata filter loại bỏ các tài liệu Money Back Guarantee chung, giữ lại đúng tài liệu đổi trả thực tế. |
-| **Q1** | RecursiveChunker | **1/2** (Rank 2) | **0/2** (Vắng mặt) | **CÓ** | Filter cứu vãn hoàn toàn câu hỏi từ thất bại (0đ) lên đạt điểm (Rank 2). |
+| **Q1** | RecursiveChunker | **2/2** (Rank 1) | **0/2** (Vắng mặt) | **CÓ** | Filter cứu vãn hoàn toàn câu hỏi từ thất bại (0đ) lên đạt điểm tuyệt đối (Rank 1). |
 | **Q1** | HeadingChunker | **2/2** (Rank 1) | **1/2** (Rank 2) | **CÓ** | Filter đưa chunk "Top Takeaway" trực tiếp lên vị trí dẫn đầu (Rank 1). |
 | **Q4** | FixedSize + Overlap | **2/2** (Rank 1) | **2/2** (Rank 1) | **CÓ** | Filter loại bỏ 1 chunk của buyer lọt vào Top-3, giúp context thuần seller 100%. |
-| **Q4** | RecursiveChunker | **2/2** (Rank 1) | **2/2** (Rank 1) | **KHÔNG** | Từ vựng trong query đã quá đặc trưng cho seller, mô hình tự xếp hạng chính xác. |
-| **Q4** | HeadingChunker | **2/2** (Rank 1) | **2/2** (Rank 1) | **KHÔNG** | Tương tự Recursive; không có sự thay đổi thứ hạng Top-3. |
+| **Q4** | RecursiveChunker | **0/2** (Vắng mặt) | **0/2** (Vắng mặt) | **KHÔNG** | R2 không tìm được chunk chứa đáp án dù có hay không có filter. |
+| **Q4** | HeadingChunker | **2/2** (Rank 1) | **2/2** (Rank 1) | **KHÔNG** | Từ vựng trong query đã quá đặc trưng, không có sự thay đổi thứ hạng Top-3. |
 
 > [!IMPORTANT]
 > **Kết luận chuyên sâu về Metadata Filtering:**

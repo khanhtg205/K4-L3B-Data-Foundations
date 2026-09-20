@@ -1,0 +1,39 @@
+Embedding backend: mock embeddings fallback
+
+=== Strategy: selected (HeadingChunker) ===
+Loaded 243 chunks from 5 files
+
+Q1: What happens if an item does not match the listing or arrives faulty or damaged?
+Filter: {'audience': 'buyer'}
+Gold: The buyer may be eligible for eBay Money Back Guarantee and can return the item even if the seller's policy says returns are not accepted.
+  1. score=0.2849 doc_id=ebay-buyer-money-back-guarantee chunk=ebay-buyer-money-back-guarantee#75 marker=NO
+  2. score=0.2079 doc_id=ebay-buyer-return-shipping chunk=ebay-buyer-return-shipping#4 marker=NO
+  3. score=0.2070 doc_id=ebay-buyer-money-back-guarantee chunk=ebay-buyer-money-back-guarantee#52 marker=NO
+
+Q2: How long does the seller have to respond to a buyer's return request?
+Filter: {'audience': 'buyer'}
+Gold: The seller should respond within 3 business days.
+  1. score=0.3020 doc_id=ebay-buyer-return-refund chunk=ebay-buyer-return-refund#10 marker=NO
+  2. score=0.2686 doc_id=ebay-buyer-money-back-guarantee chunk=ebay-buyer-money-back-guarantee#65 marker=NO
+  3. score=0.2478 doc_id=ebay-buyer-money-back-guarantee chunk=ebay-buyer-money-back-guarantee#86 marker=NO
+
+Q3: How long do refunds typically take to become available?
+Filter: {'audience': 'buyer'}
+Gold: Refunds are typically available within 3-5 business days.
+  1. score=0.2329 doc_id=ebay-buyer-money-back-guarantee chunk=ebay-buyer-money-back-guarantee#76 marker=NO
+  2. score=0.2061 doc_id=ebay-buyer-money-back-guarantee chunk=ebay-buyer-money-back-guarantee#53 marker=NO
+  3. score=0.2039 doc_id=ebay-buyer-return-shipping chunk=ebay-buyer-return-shipping#18 marker=NO
+
+Q4: What is the maximum transaction defect rate in the seller standards policy?
+Filter: {'audience': 'seller'}
+Gold: The maximum transaction defect rate is 2% of transactions.
+  1. score=0.2560 doc_id=ebay-seller-standards chunk=ebay-seller-standards#18 marker=NO
+  2. score=0.2029 doc_id=ebay-seller-protections chunk=ebay-seller-protections#11 marker=NO
+  3. score=0.1972 doc_id=ebay-seller-standards chunk=ebay-seller-standards#42 marker=NO
+
+Q5: List the eligibility conditions for protections for Top Rated Sellers.
+Filter: {'audience': 'seller'}
+Gold: The seller must be Top Rated, reside in the US or Canada, not have a Very High service-metrics rating, list on eBay.com, and offer 30-day or longer returns.
+  1. score=0.2450 doc_id=ebay-seller-standards chunk=ebay-seller-standards#24 marker=NO
+  2. score=0.2345 doc_id=ebay-seller-standards chunk=ebay-seller-standards#30 marker=NO
+  3. score=0.2344 doc_id=ebay-seller-standards chunk=ebay-seller-standards#15 marker=NO

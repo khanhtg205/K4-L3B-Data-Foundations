@@ -1,12 +1,12 @@
 ---
-doc_id: "ebay-seller-protections"
-title: "Cơ chế bảo vệ người bán trên eBay"
-source_url: "https://www.ebay.com/help/policies/selling-policies/seller-protections?id=4345"
-retrieved_at: "2026-09-20"
-document_version: "not-stated"
-audience: "seller"
-category: "seller-protection"
-language: "en"
+doc_id: ebay-seller-protections
+title: Cơ chế bảo vệ người bán trên eBay
+source_url: https://www.ebay.com/help/policies/selling-policies/seller-protections?id=4345
+retrieved_at: 2026-09-20
+document_version: not-stated
+audience: seller
+category: seller-protection
+language: en
 ---
 
 # Cơ chế bảo vệ người bán trên eBay

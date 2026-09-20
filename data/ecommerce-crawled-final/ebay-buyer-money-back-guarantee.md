@@ -1,12 +1,12 @@
 ---
-doc_id: "ebay-buyer-money-back-guarantee"
-title: "Chính sách eBay Money Back Guarantee"
-source_url: "https://www.ebay.com/help/policies/ebay-money-back-guarantee-policy/ebay-money-back-guarantee-policy?id=4210"
-retrieved_at: "2026-09-20"
-document_version: "not-stated"
-audience: "buyer"
-category: "buyer-protection"
-language: "en"
+doc_id: ebay-buyer-money-back-guarantee
+title: Chính sách eBay Money Back Guarantee
+source_url: https://www.ebay.com/help/policies/ebay-money-back-guarantee-policy/ebay-money-back-guarantee-policy?id=4210
+retrieved_at: 2026-09-20
+document_version: not-stated
+audience: buyer
+category: buyer-protection
+language: en
 ---
 
 # Chính sách eBay Money Back Guarantee

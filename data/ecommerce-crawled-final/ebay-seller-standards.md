@@ -1,12 +1,12 @@
 ---
-doc_id: "ebay-seller-standards"
-title: "Tiêu chuẩn hiệu suất của người bán trên eBay"
-source_url: "https://www.ebay.com/help/policies/selling-policies/seller-performance-policy?id=4347"
-retrieved_at: "2026-09-20"
-document_version: "not-stated"
-audience: "seller"
-category: "seller-performance"
-language: "en"
+doc_id: ebay-seller-standards
+title: Tiêu chuẩn hiệu suất của người bán trên eBay
+source_url: https://www.ebay.com/help/policies/selling-policies/seller-performance-policy?id=4347
+retrieved_at: 2026-09-20
+document_version: not-stated
+audience: seller
+category: seller-performance
+language: en
 ---
 
 # Tiêu chuẩn hiệu suất của người bán trên eBay

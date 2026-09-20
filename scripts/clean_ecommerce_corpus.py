@@ -275,7 +275,16 @@ def clean_file(file_path: Path):
     if len(parts) < 3:
         return
 
-    frontmatter = f"---{parts[1]}---\n\n"
+    # Normalize frontmatter: strip quotes so naive regex in Checkpoint 2 matches doc_id == p.stem
+    fm_lines = []
+    for line in parts[1].strip().splitlines():
+        m = re.match(r"^(\w+):\s*[\"'](.*)[\"']\s*$", line)
+        if m:
+            fm_lines.append(f"{m.group(1)}: {m.group(2)}")
+        else:
+            fm_lines.append(line)
+    frontmatter = "---\n" + "\n".join(fm_lines) + "\n---\n\n"
+
     body = parts[2].strip()
 
     # 1. Strip top header boilerplate

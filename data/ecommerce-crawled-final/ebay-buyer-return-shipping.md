@@ -1,12 +1,12 @@
 ---
-doc_id: "ebay-buyer-return-shipping"
-title: "Chi phí vận chuyển khi người mua trả hàng"
-source_url: "https://www.ebay.com/help/returns-refunds/returning-item-purchased/return-postage?id=4066"
-retrieved_at: "2026-09-20"
-document_version: "not-stated"
-audience: "buyer"
-category: "returns-policy"
-language: "en"
+doc_id: ebay-buyer-return-shipping
+title: Chi phí vận chuyển khi người mua trả hàng
+source_url: https://www.ebay.com/help/returns-refunds/returning-item-purchased/return-postage?id=4066
+retrieved_at: 2026-09-20
+document_version: not-stated
+audience: buyer
+category: returns-policy
+language: en
 ---
 
 # Chi phí vận chuyển khi người mua trả hàng

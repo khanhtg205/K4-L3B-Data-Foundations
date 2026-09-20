@@ -1,12 +1,12 @@
 ---
-doc_id: "ebay-buyer-return-refund"
-title: "Quy định trả hàng và hoàn tiền trên eBay"
-source_url: "https://www.ebay.com/help/buying/returns-refunds/return-item-refund?id=4041"
-retrieved_at: "2026-09-20"
-document_version: "not-stated"
-audience: "buyer"
-category: "returns-policy"
-language: "en"
+doc_id: ebay-buyer-return-refund
+title: Quy định trả hàng và hoàn tiền trên eBay
+source_url: https://www.ebay.com/help/buying/returns-refunds/return-item-refund?id=4041
+retrieved_at: 2026-09-20
+document_version: not-stated
+audience: buyer
+category: returns-policy
+language: en
 ---
 
 # Quy định trả hàng và hoàn tiền trên eBay

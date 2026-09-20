@@ -6,7 +6,7 @@ import os
 
 # Multilingual model suitable for the Vietnamese corpora used in this Lab.
 # The local backend remains optional; required checkpoints use MockEmbedder.
-LOCAL_EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+LOCAL_EMBEDDING_MODEL = os.getenv("LOCAL_EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 OPENAI_EMBEDDING_MODEL = "text-embedding-3-small"
 GEMINI_EMBEDDING_MODEL = "gemini-embedding-001"
 EMBEDDING_PROVIDER_ENV = "EMBEDDING_PROVIDER"
